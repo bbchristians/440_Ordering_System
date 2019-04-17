@@ -44,6 +44,7 @@ public class Controller {
   private void loadCategories(String database) {
     SQLiteClient conn = new SQLiteClient(database);
     this.categories = conn.getCategories();
+    conn.close();
   }
 
   /**

@@ -2,6 +2,8 @@ package org.rit.swen440.control;
 
 import org.rit.swen440.dataLayer.Category;
 import org.rit.swen440.dataLayer.Product;
+import org.rit.swen440.dataLayer.SQLiteClient;
+import org.sqlite.SQLiteConnection;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -21,7 +23,6 @@ import java.util.stream.Collectors;
  * categories and products from information on the underlying file system.
  */
 public class Controller {
-  private Path dirPath;
   private Set<Category> categories = new HashSet<>();
 
   public  enum PRODUCT_FIELD {
@@ -29,38 +30,20 @@ public class Controller {
     DESCRIPTION,
     COST,
     INVENTORY
-  };
+  }
 
-  public Controller(String directory) {
-    loadCategories(directory);
+  public Controller() {
+    loadCategories("test.db");
   }
 
   /**
    * Load the Category information
    *
-   * @param directory root directory
+   * @param database the database to collect the catagory info from
    */
-  private void loadCategories(String directory) {
-    this.dirPath = Paths.get(directory);
-
-    DirectoryStream.Filter<Path> dirFilter = new DirectoryStream.Filter<Path>() {
-      @Override
-      public boolean accept(Path path) throws IOException {
-        return Files.isDirectory(path);
-      }
-    };
-
-    // We're just interested in directories, filter out all other files
-    try (DirectoryStream<Path> stream = Files.newDirectoryStream(dirPath, dirFilter)) {
-      for (Path file : stream) {
-        // get the category information from each directory
-        Optional<Category> entry = getCategory(file);
-        entry.ifPresent(categories::add);
-      }
-    } catch (IOException | DirectoryIteratorException e) {
-      // TODO:  Replace with logger
-      System.err.println(e);
-    }
+  private void loadCategories(String database) {
+    SQLiteClient conn = new SQLiteClient(database);
+    this.categories = conn.getCategories();
   }
 
   /**

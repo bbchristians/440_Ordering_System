@@ -1,5 +1,6 @@
 package org.rit.swen440.dataLayer;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.HashSet;
@@ -12,30 +13,28 @@ public class SQLiteClient {
 
     private Connection conn;
 
-    public SQLiteClient(String db) {
+    public SQLiteClient(String db) throws DataLayerException {
+        String dbLoc = DB_DIR + db;
         try {
-            this.conn = DriverManager.getConnection(SQLITE_PREPEND + DB_DIR + db);
-            if (this.conn != null) {
-                DatabaseMetaData meta = this.conn.getMetaData();
-                System.out.println("The driver name is " + meta.getDriverName());
-                System.out.println("A new database has been created.");
+            if( dbExists(dbLoc) ) {
+                this.conn = DriverManager.getConnection(SQLITE_PREPEND + dbLoc);
+            } else {
+                throw new DataLayerException("Could not find database at " + dbLoc +
+                        ". Please make sure that a database with this name exists in the " +
+                        DB_DIR + " directory.");
             }
-
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
-            // TODO handle?
+            throw new DataLayerException("An error occurred while loading the database. Try again and if the problem persists, contact your system administrator");
         }
     }
 
     public void close() {
         try {
             this.conn.close();
-        } catch (SQLException e) {
-            // TODO handle?
-        }
+        } catch (SQLException e) { }
     }
 
-    public Set<Category> getCategories() {
+    public Set<Category> getCategories() throws DataLayerException {
         try {
             PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM CATEGORY");
             ResultSet rs = stmt.executeQuery();
@@ -56,13 +55,11 @@ public class SQLiteClient {
             }
             return results;
         } catch (SQLException e) {
-            // TODO handle?
-            System.out.println(e.getMessage());
+            throw new DataLayerException("An error was encountered when accessing the supplied database. Make sure the database is formatted correctly.");
         }
-        return new HashSet<Category>();
     }
 
-    private Set<Product> getProducts(int categoryID) {
+    private Set<Product> getProducts(int categoryID) throws DataLayerException {
         try {
             PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM ITEM WHERE CID=?");
             stmt.setInt(1, categoryID);
@@ -86,15 +83,12 @@ public class SQLiteClient {
             }
             return results;
         } catch (SQLException e) {
-            // TODO handle?
-            System.out.println(e.getMessage());
+            throw new DataLayerException("An error was encountered when accessing the database. Make sure the database is formatted correctly.");
         }
-        return new HashSet<Product>();
     }
 
-    public static void main(String[] args) {
-        SQLiteClient conn = new SQLiteClient("test.db");
-        System.out.println(conn.getCategories());
-        conn.close();
+    private boolean dbExists(String dbPath) {
+        File dbTest = new File(dbPath);
+        return dbTest.exists();
     }
 }

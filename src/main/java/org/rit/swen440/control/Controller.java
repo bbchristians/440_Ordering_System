@@ -1,6 +1,7 @@
 package org.rit.swen440.control;
 
 import org.rit.swen440.dataLayer.Category;
+import org.rit.swen440.dataLayer.DataLayerException;
 import org.rit.swen440.dataLayer.Product;
 import org.rit.swen440.dataLayer.SQLiteClient;
 import org.sqlite.SQLiteConnection;
@@ -32,7 +33,7 @@ public class Controller {
     INVENTORY
   }
 
-  public Controller() {
+  public Controller() throws DataLayerException {
     loadCategories("test.db");
   }
 
@@ -41,7 +42,7 @@ public class Controller {
    *
    * @param database the database to collect the catagory info from
    */
-  private void loadCategories(String database) {
+  private void loadCategories(String database) throws DataLayerException {
     SQLiteClient conn = new SQLiteClient(database);
     this.categories = conn.getCategories();
     conn.close();

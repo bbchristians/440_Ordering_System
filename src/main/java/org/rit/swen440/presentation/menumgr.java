@@ -2,6 +2,7 @@ package org.rit.swen440.presentation;
 
 import org.rit.swen440.control.Controller;
 import org.rit.swen440.dataLayer.Category;
+import org.rit.swen440.dataLayer.DataLayerException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,12 @@ public class menumgr
 
     public menumgr()
     {
-        controller = new Controller();
-
+        try {
+            controller = new Controller();
+        } catch (DataLayerException e) {
+            System.out.println(e.getMessage());
+            System.exit(0);
+        }
     }
 
     public boolean loadLevel(int level)
@@ -52,6 +57,9 @@ public class menumgr
 
     public void Level0()
     {
+        if( this.controller == null ) {
+            return;
+        }
         menu m = new menu();
         List<String> categories = controller.getCategories();
         m.loadMenu(categories);
@@ -83,6 +91,10 @@ public class menumgr
 
     public void Level1()
     {
+
+        if (this.controller == null) {
+            return;
+        }
         menu m = new menu();
 
         //items it = new items("orderSys/" + currentCategory.getName());
@@ -129,6 +141,9 @@ public class menumgr
 
     public void OrderQty(String category, String item)
     {
+        if( this.controller == null ) {
+            return;
+        }
         System.out.println("Please select a quantity");
         System.out.println(controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.NAME) +
                 " availability:" + controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.INVENTORY));

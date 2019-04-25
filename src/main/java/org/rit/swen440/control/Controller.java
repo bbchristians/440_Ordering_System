@@ -36,13 +36,8 @@ public class Controller {
     INVENTORY
   }
 
-  public Controller() throws DataLayerException {
-    FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.LOAD);
-    fd.setDirectory("data");
-    fd.setFile("*.db");
-    fd.setVisible(true);
-    String filename = fd.getFile();
-    loadCategories(filename);
+  public Controller(String fileName) throws DataLayerException {
+    loadCategories(fileName);
   }
 
   /**

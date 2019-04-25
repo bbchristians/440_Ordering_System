@@ -22,7 +22,11 @@ public class menumgr
     public menumgr()
     {
         try {
-            controller = new Controller();
+            String fileName = (new FileSelector()).requestFileName();
+            if( fileName == null ) {
+                throw new DataLayerException("Please open a .db file.");
+            }
+            controller = new Controller(fileName);
         } catch (DataLayerException e) {
             System.out.println(e.getMessage());
             System.exit(0);

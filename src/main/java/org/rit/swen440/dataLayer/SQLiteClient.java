@@ -10,6 +10,7 @@ public class SQLiteClient {
 
     private final String DB_DIR = "data/";
     private final String SQLITE_PREPEND = "jdbc:sqlite:";
+    private final Logger LOGGER = Logger.OSLogger;
 
     private Connection conn;
 
@@ -35,6 +36,7 @@ public class SQLiteClient {
     }
 
     public Set<Category> getCategories() throws DataLayerException {
+        LOGGER.log("INFO", "System retrieving categories from relational database...");
         try {
             PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM CATEGORY");
             ResultSet rs = stmt.executeQuery();
@@ -55,11 +57,13 @@ public class SQLiteClient {
             }
             return results;
         } catch (SQLException e) {
+            LOGGER.log("ERROR", "System encountered an SQL exception while retrieving categories. Error readout: \r\n" + e.toString());
             throw new DataLayerException("An error was encountered when accessing the supplied database. Make sure the database is formatted correctly.");
         }
     }
 
     private Set<Product> getProducts(int categoryID) throws DataLayerException {
+        LOGGER.log("INFO", "System retrieving products from relational database...");
         try {
             PreparedStatement stmt = this.conn.prepareStatement("SELECT * FROM ITEM WHERE CID=?");
             stmt.setInt(1, categoryID);
@@ -83,6 +87,7 @@ public class SQLiteClient {
             }
             return results;
         } catch (SQLException e) {
+            LOGGER.log("ERROR", "System encountered an SQL exception. Error readout: \r\n" + e.toString());
             throw new DataLayerException("An error was encountered when accessing the database. Make sure the database is formatted correctly.");
         }
     }

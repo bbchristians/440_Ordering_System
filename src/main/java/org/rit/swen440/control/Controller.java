@@ -6,8 +6,11 @@ import org.rit.swen440.dataLayer.Product;
 import org.rit.swen440.dataLayer.SQLiteClient;
 import org.sqlite.SQLiteConnection;
 
+import javax.swing.*;
+import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
@@ -34,7 +37,12 @@ public class Controller {
   }
 
   public Controller() throws DataLayerException {
-    loadCategories("test.db");
+    FileDialog fd = new FileDialog(new Frame(), "Choose a file", FileDialog.LOAD);
+    fd.setDirectory("data");
+    fd.setFile("*.db");
+    fd.setVisible(true);
+    String filename = fd.getFile();
+    loadCategories(filename);
   }
 
   /**

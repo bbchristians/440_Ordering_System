@@ -3,6 +3,7 @@ package org.rit.swen440.presentation;
 import org.rit.swen440.control.Controller;
 import org.rit.swen440.dataLayer.Category;
 import org.rit.swen440.dataLayer.DataLayerException;
+import org.rit.swen440.dataLayer.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +19,20 @@ public class menumgr
     category currentCategory;
     item currentItem;
     private Controller controller;
+    private final Logger LOGGER = Logger.OSLogger;
 
     public menumgr()
     {
+        LOGGER.log("INFO", "Starting the Ordering System.");
         try {
             String fileName = (new FileSelector()).requestFileName();
             if( fileName == null ) {
                 throw new DataLayerException("Please open a .db file.");
             }
             controller = new Controller(fileName);
+            LOGGER.log("Access", "Database has been opened.");
         } catch (DataLayerException e) {
+            LOGGER.log("CRASH", "System failed to open a .db file.");
             System.out.println(e.getMessage());
             System.exit(0);
         }

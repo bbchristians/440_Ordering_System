@@ -2,9 +2,12 @@ package org.rit.swen440.presentation;
 
 import java.util.*;
 import java.io.*;
+import org.rit.swen440.dataLayer.Logger;
 
 public class item
 {
+    private static final Logger LOGGER = Logger.OSLogger;
+
     String sku;
     int inventory;
     int reorderThreshold; //Not used
@@ -27,6 +30,7 @@ public class item
     {
         try 
         {
+            LOGGER.log("INFO", "Loading Item Data from path:\r\n  " + path);
             String str = "";
             BufferedReader in = new BufferedReader(new FileReader(path));
             int lineCount = 0;

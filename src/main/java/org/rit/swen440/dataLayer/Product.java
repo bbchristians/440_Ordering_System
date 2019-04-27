@@ -2,7 +2,6 @@ package org.rit.swen440.dataLayer;
 
 import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -47,6 +46,8 @@ public class Product {
       itemCount = itemCount - amount;
       setUpdated(true);  // Need to store the updated product information
 
+      BigDecimal totalCost = this.cost.multiply(new BigDecimal(amount));
+      Logger.OSLogger.log("BigDecimal", amount + " " + title + " sold, costing: $" + totalCost.toString() + ".");
       // TODO:  add stock management functionality
       return true;
     }

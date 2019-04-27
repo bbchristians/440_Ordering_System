@@ -1,11 +1,16 @@
 package org.rit.swen440.presentation;
 
+import org.rit.swen440.dataLayer.Logger;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class menu
 {
+
+    private static final Logger LOGGER = Logger.OSLogger;
+
     private List<String> menuList;
     Scanner sc;
     public menu()
@@ -39,6 +44,7 @@ public class menu
 
         sc.reset();
         result = sc.nextLine();
+        LOGGER.log("INFO", "Retrieved a selection: " + result);
         return result;
     }
 }

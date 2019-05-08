@@ -13,8 +13,6 @@ public class menumgr
     int currentLevel = 0;
     String currentCategoryName;
     String currentItemName;
-    category currentCategory;
-    item currentItem;
     private Controller controller;
     private static final Logger LOGGER = Logger.OSLogger;
 
@@ -95,6 +93,7 @@ public class menumgr
         } else {
             if (result.equals("q")) {
                 currentLevel--;
+                LOGGER.log("INFO",  "Returning the user to menu screen " + currentLevel);
             } else {
                 if (iSel == 2) {
                     List<String> logItems = controller.getLogs();
@@ -104,6 +103,7 @@ public class menumgr
                     System.out.println(" ");
                 } else {
                     currentLevel++;
+                    LOGGER.log("INFO",  "Sending the user to menu screen " + currentLevel);
 
                     currentCategoryName = categories.get(iSel);
                     System.out.println("\nYour Selection was:" + currentCategoryName);
@@ -114,15 +114,11 @@ public class menumgr
 
     public void Level1()
     {
-
         if (this.controller == null) {
             return;
         }
         menu m = new menu();
 
-        //items it = new items("orderSys/" + currentCategory.getName());
-
-        // List<item> itemList = controller.getProducts(currentCategoryName);
         List<String> itemList = controller.getProducts(currentCategoryName);
         List<String> l = new ArrayList<>();
         System.out.println("");
@@ -138,7 +134,6 @@ public class menumgr
         {
             int iSel = Integer.parseInt(result);//Item  selected
             currentItemName = itemList.get(iSel);
-            //currentItem = itemList.get(iSel);
             //Now read the file and print the org.rit.swen440.presentation.items in the catalog
             System.out.println("You want item from the catalog: " + currentItemName);
         }
@@ -146,11 +141,11 @@ public class menumgr
         {
             result = "q";
         }
-        if (result == "q")
+        if (result == "q") {
             currentLevel--;
-        else
+            LOGGER.log("INFO", "Returning the user to menu screen " + currentLevel);
+        } else
         {
-            //currentLevel++;//Or keep at same level?
             OrderQty(currentCategoryName, currentItemName);
         }
     }

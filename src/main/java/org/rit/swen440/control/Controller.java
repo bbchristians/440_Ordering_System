@@ -1,6 +1,8 @@
 package org.rit.swen440.control;
 
 import org.rit.swen440.dataLayer.*;
+import org.rit.swen440.dataLayer.sqlite.DataSQLiteClient;
+import org.rit.swen440.dataLayer.sqlite.LogSQLiteClient;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -261,12 +263,16 @@ public class Controller {
   }
 
   public List<String> getLogs(){
-    // TODO : Delete this when the database call is implemented
-    List<String> logItems = new ArrayList<>();
-    logItems.add("Log item 1");
-    logItems.add("Log item 2");
-    logItems.add("Log item 3");
-    logItems.add("Log item 4");
-    return logItems;
+    List<LogItem> logItems = null;
+    try {
+      LogSQLiteClient client = new LogSQLiteClient("logs.db");
+      logItems = client.getLogs(0, Long.MAX_VALUE);
+    } catch (Exception e) {}
+
+    List<String> logItemStrings = new ArrayList<>();
+    for(LogItem item : logItems){
+      logItemStrings.add(item.severity + " | " + item.date.toString() + ":\n" + "  " + item.message);
+    }
+    return logItemStrings;
   }
 }

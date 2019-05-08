@@ -32,7 +32,7 @@ public class Product {
    * @return true if enough stock
    */
   public boolean canOrder(int amount) {
-    return (itemCount - amount >= 0);
+    return (itemCount - amount >= 0) && (amount > 0);
   }
 
   /**
@@ -47,7 +47,7 @@ public class Product {
       setUpdated(true);  // Need to store the updated product information
 
       BigDecimal totalCost = this.cost.multiply(new BigDecimal(amount));
-      Logger.OSLogger.log("BigDecimal", amount + " " + title + " sold, costing: $" + totalCost.toString() + ".");
+      Logger.OSLogger.log("INFO", amount + " " + title + " sold, costing: $" + totalCost.toString() + ".");
       // TODO:  add stock management functionality
       return true;
     }

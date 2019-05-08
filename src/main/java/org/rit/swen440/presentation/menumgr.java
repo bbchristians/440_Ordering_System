@@ -1,14 +1,11 @@
 package org.rit.swen440.presentation;
 
 import org.rit.swen440.control.Controller;
-import org.rit.swen440.dataLayer.Category;
 import org.rit.swen440.dataLayer.DataLayerException;
 import org.rit.swen440.dataLayer.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class menumgr
@@ -19,7 +16,7 @@ public class menumgr
     category currentCategory;
     item currentItem;
     private Controller controller;
-    private final Logger LOGGER = Logger.OSLogger;
+    private static final Logger LOGGER = Logger.OSLogger;
 
     public menumgr()
     {
@@ -66,35 +63,52 @@ public class menumgr
 
     public void Level0()
     {
+        boolean broken = false;
+        int iSel = -1;
         if( this.controller == null ) {
             return;
         }
         menu m = new menu();
         List<String> categories = controller.getCategories();
+        categories.add("Show logs");
         m.loadMenu(categories);
-        m.addMenuItem("'q' to Quit"); 
-        System.out.println("The following org.rit.swen440.presentation.categories are available");
+        System.out.println("The following categories are available");
         m.printMenu();
         String result = "0";
         try
         {
             result = m.getSelection();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             result = "q";
         }
-        if (Objects.equals(result,"q"))
-        {
-            currentLevel--;
+        try {
+            iSel = Integer.parseInt(result);
+            broken &= (iSel >= categories.size());
+            broken &= (iSel < 0);
+        } catch (NumberFormatException e) {
+            broken = false;
         }
-        else
-        {
-            currentLevel++;
-            int iSel = Integer.parseInt(result);
+        if (broken) {
+            LOGGER.log("INFO",  "User entered an invalid category selection. Selection: " + result);
+            System.out.println("Please select a valid option.");
+        } else {
+            if (result.equals("q")) {
+                currentLevel--;
+            } else {
+                if (iSel == 2) {
+                    List<String> logItems = controller.getLogs();
+                    for (String item : logItems){
+                        System.out.println(item);
+                    }
+                    System.out.println(" ");
+                } else {
+                    currentLevel++;
 
-            currentCategoryName = categories.get(iSel);
-            System.out.println("\nYour Selection was:" + currentCategoryName);
+                    currentCategoryName = categories.get(iSel);
+                    System.out.println("\nYour Selection was:" + currentCategoryName);
+                }
+            }
         }
     }
 
@@ -117,7 +131,6 @@ public class menumgr
              + "($" + controller.getProductInformation(currentCategoryName, itm, Controller.PRODUCT_FIELD.COST) + ")");
         
         m.loadMenu(l);
-        m.addMenuItem("'q' to quit");
         System.out.println("The following items are available");
         m.printMenu();
         String result = m.getSelection();
@@ -150,15 +163,30 @@ public class menumgr
 
     public void OrderQty(String category, String item)
     {
+        int iSel = -1;
         if( this.controller == null ) {
             return;
         }
         System.out.println("Please select a quantity");
         System.out.println(controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.NAME) +
                 " availability:" + controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.INVENTORY));
-        System.out.print(":");
+        System.out.print(">");
         menu m = new menu();
         String result = m.getSelection();
-        System.out.println("You ordered:" + result);
+        try {
+            iSel = Integer.parseInt(result);
+        } catch (NumberFormatException e){
+            LOGGER.log("INFO", "User entered invalid option for order quantity. Input: " + result);
+        }
+
+        System.out.println("ISEL " + Integer.toString(iSel));
+        boolean victory = (iSel > 0);
+        victory &= controller.tryOrder(category, item, iSel);
+
+        if (victory) {
+            System.out.println("You ordered: " + result);
+        } else {
+            System.out.println("Order failed.");
+        }
     }
 }

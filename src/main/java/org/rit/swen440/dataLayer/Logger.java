@@ -27,7 +27,7 @@ public class Logger {
             OutputStream os = new FileOutputStream("log.txt", true);
             PrintWriter pw = new PrintWriter(os);
             Date date = new Date();
-            String toLog = date.toString() + " | " + severity + ":\n";
+            String toLog = severity + " | " + date.toString() + ":\n";
             toLog += "  " + message;
             pw.println(toLog);
             pw.close();

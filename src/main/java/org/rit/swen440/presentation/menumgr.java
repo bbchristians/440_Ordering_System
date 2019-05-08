@@ -19,7 +19,7 @@ public class menumgr
     category currentCategory;
     item currentItem;
     private Controller controller;
-    private final Logger LOGGER = Logger.OSLogger;
+    private static final Logger LOGGER = Logger.OSLogger;
 
     public menumgr()
     {
@@ -66,35 +66,43 @@ public class menumgr
 
     public void Level0()
     {
+        boolean broken = false;
+        int iSel = -1;
         if( this.controller == null ) {
             return;
         }
         menu m = new menu();
         List<String> categories = controller.getCategories();
         m.loadMenu(categories);
-        m.addMenuItem("'q' to Quit"); 
-        System.out.println("The following org.rit.swen440.presentation.categories are available");
+        System.out.println("The following categories are available");
         m.printMenu();
         String result = "0";
         try
         {
             result = m.getSelection();
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             result = "q";
         }
-        if (Objects.equals(result,"q"))
-        {
-            currentLevel--;
+        try {
+            iSel = Integer.parseInt(result);
+            broken |= (iSel >= categories.size());
+            broken |= (iSel < 0);
+        } catch (NumberFormatException e) {
+            broken = false;
         }
-        else
-        {
-            currentLevel++;
-            int iSel = Integer.parseInt(result);
+        if (broken) {
+            LOGGER.log("INFO",  "User entered an invalid category selection. Selection: " + result);
+            System.out.println("Please select a valid option.");
+        } else {
+            if (result.equals("q")) {
+                currentLevel--;
+            } else {
+                currentLevel++;
 
-            currentCategoryName = categories.get(iSel);
-            System.out.println("\nYour Selection was:" + currentCategoryName);
+                currentCategoryName = categories.get(iSel);
+                System.out.println("\nYour Selection was:" + currentCategoryName);
+            }
         }
     }
 

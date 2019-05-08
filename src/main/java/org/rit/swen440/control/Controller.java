@@ -39,7 +39,7 @@ public class Controller {
    * @param database the database to collect the catagory info from
    */
   private void loadCategories(String database) throws DataLayerException {
-    SQLiteClient conn = new SQLiteClient(database);
+    DataSQLiteClient conn = new DataSQLiteClient(database);
     this.categories = conn.getCategories();
     conn.close();
   }

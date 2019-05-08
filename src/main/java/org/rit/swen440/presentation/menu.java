@@ -35,7 +35,7 @@ public class menu
         {
             System.out.println(i+": " + menuList.get(i));
         }
-        System.out.println("Press 'q' to quit.");
+        System.out.println("Press 'q' to return.");
     }
 
     public String getSelection()

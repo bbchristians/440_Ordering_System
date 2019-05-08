@@ -86,8 +86,8 @@ public class menumgr
         }
         try {
             iSel = Integer.parseInt(result);
-            broken |= (iSel >= categories.size());
-            broken |= (iSel < 0);
+            broken &= (iSel >= categories.size());
+            broken &= (iSel < 0);
         } catch (NumberFormatException e) {
             broken = false;
         }
@@ -125,7 +125,6 @@ public class menumgr
              + "($" + controller.getProductInformation(currentCategoryName, itm, Controller.PRODUCT_FIELD.COST) + ")");
         
         m.loadMenu(l);
-        m.addMenuItem("'q' to quit");
         System.out.println("The following items are available");
         m.printMenu();
         String result = m.getSelection();
@@ -158,15 +157,30 @@ public class menumgr
 
     public void OrderQty(String category, String item)
     {
+        int iSel = -1;
         if( this.controller == null ) {
             return;
         }
         System.out.println("Please select a quantity");
         System.out.println(controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.NAME) +
                 " availability:" + controller.getProductInformation(category, item, Controller.PRODUCT_FIELD.INVENTORY));
-        System.out.print(":");
+        System.out.print(">");
         menu m = new menu();
         String result = m.getSelection();
-        System.out.println("You ordered:" + result);
+        try {
+            iSel = Integer.parseInt(result);
+        } catch (NumberFormatException e){
+            LOGGER.log("INFO", "User entered invalid option for order quantity. Input: " + result);
+        }
+
+        System.out.println("ISEL " + Integer.toString(iSel));
+        boolean victory = (iSel > 0);
+        victory &= controller.tryOrder(category, item, iSel);
+
+        if (victory) {
+            System.out.println("You ordered: " + result);
+        } else {
+            System.out.println("Order failed.");
+        }
     }
 }

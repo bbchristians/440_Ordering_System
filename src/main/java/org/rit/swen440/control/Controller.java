@@ -1,9 +1,7 @@
 package org.rit.swen440.control;
 
-import org.rit.swen440.dataLayer.Category;
-import org.rit.swen440.dataLayer.DataLayerException;
-import org.rit.swen440.dataLayer.Product;
-import org.rit.swen440.dataLayer.SQLiteClient;
+import jdk.nashorn.internal.runtime.options.Option;
+import org.rit.swen440.dataLayer.*;
 import org.sqlite.SQLiteConnection;
 
 import javax.swing.*;
@@ -170,6 +168,19 @@ public class Controller {
 
   private Optional<Product> getProduct(String category, String product) {
     return findCategory(category).map(c -> c.findProduct(product)).orElse(null);
+  }
+
+  public boolean tryOrder(String category, String product, int count) {
+    Optional<Product> pOpt = getProduct(category, product);
+    if (pOpt.isPresent()) {
+      Product p = getProduct(category, product).get();
+      if (p != null) {
+        return p.order(count);
+      }
+    } else {
+      Logger.OSLogger.log("ERROR", "Tried to order " + Integer.toString(count) + " of " + product + " and failed.");
+    }
+    return false;
   }
 
   /**

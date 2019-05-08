@@ -3,14 +3,11 @@ package org.rit.swen440.control;
 import org.rit.swen440.dataLayer.Category;
 import org.rit.swen440.dataLayer.DataLayerException;
 import org.rit.swen440.dataLayer.Product;
-import org.rit.swen440.dataLayer.SQLiteClient;
-import org.sqlite.SQLiteConnection;
+import org.rit.swen440.dataLayer.sqlite.DataSQLiteClient;
+import org.rit.swen440.dataLayer.sqlite.SQLiteClient;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
@@ -46,7 +43,7 @@ public class Controller {
    * @param database the database to collect the catagory info from
    */
   private void loadCategories(String database) throws DataLayerException {
-    SQLiteClient conn = new SQLiteClient(database);
+    DataSQLiteClient conn = new DataSQLiteClient(database);
     this.categories = conn.getCategories();
     conn.close();
   }

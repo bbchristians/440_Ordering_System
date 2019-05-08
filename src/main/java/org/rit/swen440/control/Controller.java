@@ -1,21 +1,17 @@
 package org.rit.swen440.control;
 
-import org.rit.swen440.dataLayer.Category;
-import org.rit.swen440.dataLayer.DataLayerException;
-import org.rit.swen440.dataLayer.Product;
-import org.rit.swen440.dataLayer.sqlite.DataSQLiteClient;
-import org.rit.swen440.dataLayer.sqlite.SQLiteClient;
+import org.rit.swen440.dataLayer.*;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -169,6 +165,19 @@ public class Controller {
     return findCategory(category).map(c -> c.findProduct(product)).orElse(null);
   }
 
+  public boolean tryOrder(String category, String product, int count) {
+    Optional<Product> pOpt = getProduct(category, product);
+    if (pOpt.isPresent()) {
+      Product p = getProduct(category, product).get();
+      if (p != null) {
+        return p.order(count);
+      }
+    } else {
+      Logger.OSLogger.log("ERROR", "Tried to order " + Integer.toString(count) + " of " + product + " and failed.");
+    }
+    return false;
+  }
+
   /**
    * Parse a subdirectory and create a product object for each product within it
    *
@@ -249,5 +258,15 @@ public class Controller {
     } catch(IOException e) {
       System.err.println("Failed to write product file for:" + product.getTitle());
     }
+  }
+
+  public List<String> getLogs(){
+    // TODO : Delete this when the database call is implemented
+    List<String> logItems = new ArrayList<>();
+    logItems.add("Log item 1");
+    logItems.add("Log item 2");
+    logItems.add("Log item 3");
+    logItems.add("Log item 4");
+    return logItems;
   }
 }

@@ -1,22 +1,17 @@
 package org.rit.swen440.control;
 
-import jdk.nashorn.internal.runtime.options.Option;
 import org.rit.swen440.dataLayer.*;
-import org.sqlite.SQLiteConnection;
 
-import javax.swing.*;
-import java.awt.*;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
-import java.nio.file.*;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -263,5 +258,15 @@ public class Controller {
     } catch(IOException e) {
       System.err.println("Failed to write product file for:" + product.getTitle());
     }
+  }
+
+  public List<String> getLogs(){
+    // TODO : Delete this when the database call is implemented
+    List<String> logItems = new ArrayList<>();
+    logItems.add("Log item 1");
+    logItems.add("Log item 2");
+    logItems.add("Log item 3");
+    logItems.add("Log item 4");
+    return logItems;
   }
 }

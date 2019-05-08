@@ -1,14 +1,11 @@
 package org.rit.swen440.presentation;
 
 import org.rit.swen440.control.Controller;
-import org.rit.swen440.dataLayer.Category;
 import org.rit.swen440.dataLayer.DataLayerException;
 import org.rit.swen440.dataLayer.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class menumgr
@@ -73,6 +70,7 @@ public class menumgr
         }
         menu m = new menu();
         List<String> categories = controller.getCategories();
+        categories.add("Show logs");
         m.loadMenu(categories);
         System.out.println("The following categories are available");
         m.printMenu();
@@ -98,10 +96,18 @@ public class menumgr
             if (result.equals("q")) {
                 currentLevel--;
             } else {
-                currentLevel++;
+                if (iSel == 2) {
+                    List<String> logItems = controller.getLogs();
+                    for (String item : logItems){
+                        System.out.println(item);
+                    }
+                    System.out.println(" ");
+                } else {
+                    currentLevel++;
 
-                currentCategoryName = categories.get(iSel);
-                System.out.println("\nYour Selection was:" + currentCategoryName);
+                    currentCategoryName = categories.get(iSel);
+                    System.out.println("\nYour Selection was:" + currentCategoryName);
+                }
             }
         }
     }
